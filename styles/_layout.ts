@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { Layout } from 'antd';
 
+const { Content } = Layout;
+
 export const LogoContainer = styled.div<{ collapsed: boolean }>`
 	padding: 1rem 1.5rem;
 
@@ -65,4 +67,8 @@ export const AuthContentContainer = styled.div`
 	justify-content: center;
 
 	min-height: 80vh;
+`;
+
+export const StyledContent = styled(Content)`
+	padding: 2rem;
 `;

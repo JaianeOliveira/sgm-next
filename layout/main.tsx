@@ -2,12 +2,18 @@ import { Layout, Menu, notification } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Logo from '../components/common/Logo';
-import { LogoContainer, Header, Sider, StyledLayout } from '../styles/_layout';
+import {
+	LogoContainer,
+	Header,
+	Sider,
+	StyledLayout,
+	StyledContent,
+} from '../styles/_layout';
 import Link from 'next/link';
 import { useAppSelector } from '../hooks/useRedux';
 import getMenuItems from '../utils/menuItems';
-
-const { Content } = Layout;
+import Container from '../components/common/Container';
+import MainHeader from '../components/MainHeader';
 
 type MainLayoutProps = {
 	children?: React.ReactNode | React.ReactNode[];
@@ -47,7 +53,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 				/>
 			</Sider>
 			<StyledLayout>
-				<Content>{children}</Content>
+				<Header style={{ backgroundColor: 'transparent' }}>
+					<MainHeader />
+				</Header>
+				<StyledContent>{children}</StyledContent>
 			</StyledLayout>
 		</StyledLayout>
 	);
