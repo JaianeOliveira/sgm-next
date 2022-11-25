@@ -10,10 +10,10 @@ const Calendar = () => {
 
 	const [loading, setLoading] = useState(false);
 
-    const getData = async () => {
-        setLoading(true)
-        await api.get('/calendar')
-    }
+	const getData = async () => {
+		setLoading(true);
+		await api.get('/calendar');
+	};
 
 	useEffect(() => {
 		try {
@@ -31,8 +31,8 @@ const Calendar = () => {
 				<h2>Cronograma</h2>
 			</Container>
 			<List>
-				{calendar.map((item) => (
-					<List.Item>
+				{calendar.map((item, index) => (
+					<List.Item key={index}>
 						<List.Item.Meta title={<span>{item.label}</span>} />
 						<div>{item.data}</div>
 					</List.Item>
