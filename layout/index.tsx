@@ -7,7 +7,7 @@ interface LayoutProps {
 }
 
 const Layout = ({ children }: LayoutProps) => {
-	const isAuthenticated = false;
+	const isAuthenticated = true;
 	return isAuthenticated ? (
 		<MainLayout>{children}</MainLayout>
 	) : (

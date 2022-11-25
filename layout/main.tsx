@@ -1,71 +1,53 @@
-import { Layout, Menu } from 'antd';
-import React, { useState } from 'react';
+import { Layout, Menu, notification } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Logo from '../components/common/Logo';
 import { LogoContainer, Header, Sider, StyledLayout } from '../styles/_layout';
 import Link from 'next/link';
+import { useAppSelector } from '../hooks/useRedux';
+import getMenuItems from '../utils/menuItems';
 
-const { Content, Footer } = Layout;
-
-type SideBarItem = {
-	icon: any;
-	label: string | React.ReactNode;
-	navTo: string;
-};
+const { Content } = Layout;
 
 type MainLayoutProps = {
 	children?: React.ReactNode | React.ReactNode[];
 	headerContent?: React.ReactNode | React.ReactNode[];
-	grid?: string;
-	SideBarItems?: SideBarItem[];
 };
 
-const MainLayout = ({
-	children,
-	headerContent,
-	grid,
-	SideBarItems,
-}: MainLayoutProps) => {
+const MainLayout = ({ children }: MainLayoutProps) => {
 	const router = useRouter();
-
-	const getKey = () => {
-		console.log(router.pathname);
-
-		const paths = router.pathname.split('/');
-		return paths[paths.length - 1];
-	};
-
 	const [collapsed, setCollapsed] = useState(false);
+
+	const userRole = useAppSelector((state) => state.auth.userType);
+
+	const activePath = router.asPath === '/' ? '/' : router.asPath.split('/')[1];
+
 	return (
 		<StyledLayout>
 			<Sider
+				theme="light"
 				collapsible
 				collapsed={collapsed}
-				onCollapse={setCollapsed}
-				theme="light"
+				onCollapse={(value) => setCollapsed(value)}
 			>
 				<LogoContainer collapsed={collapsed}>
 					<Logo />
 					<span>Instituto Federal de Alagoas</span>
 				</LogoContainer>
 				<Menu
-					theme="light"
+					onClick={(item) => router.push(item.key)}
+					selectedKeys={[activePath]}
+					defaultSelectedKeys={['/']}
 					mode="inline"
-					selectedKeys={[getKey()]}
-					items={SideBarItems?.map(({ icon, label, navTo }, index) => ({
+					items={getMenuItems(userRole).map(({ icon, label, navTo }) => ({
 						key: navTo,
 						icon: React.createElement(icon),
-						label: <Link href={navTo}>{label}</Link>,
+						label: label,
 					}))}
 				/>
 			</Sider>
 			<StyledLayout>
-				<Header>{headerContent}</Header>
-				<Content
-					style={{ padding: '2.5rem 5rem 2.5rem 2.5rem', minHeight: '85vh' }}
-				>
-					{children}
-				</Content>
+				<Content>{children}</Content>
 			</StyledLayout>
 		</StyledLayout>
 	);
