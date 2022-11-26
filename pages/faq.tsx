@@ -1,11 +1,12 @@
 import { Collapse } from 'antd';
 import React from 'react';
+import MainLayout from '../layout/main';
 
 const { Panel } = Collapse;
 
 const Faq = () => {
 	return (
-		<>
+		<MainLayout>
 			<h2>Dúvidas frequentes</h2>
 
 			<Collapse>
@@ -31,7 +32,7 @@ const Faq = () => {
 					</p>
 				</Panel>
 			</Collapse>
-		</>
+		</MainLayout>
 	);
 };
 

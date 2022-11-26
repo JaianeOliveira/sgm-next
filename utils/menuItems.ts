@@ -79,22 +79,17 @@ const UserItems = {
 		{
 			icon: HomeOutlined,
 			label: 'Início',
-			navTo: '/',
+			navTo: 'monitor/dashboard',
 		},
 		{
 			icon: FileTextOutlined,
 			label: 'Relatórios',
-			navTo: 'reports',
+			navTo: 'monitor/reports',
 		},
 		{
 			icon: PlaySquareOutlined,
 			label: 'Tutoriais',
 			navTo: 'tutorials',
-		},
-		{
-			icon: QuestionCircleOutlined,
-			label: 'Dúvidas frequentes',
-			navTo: 'faq',
 		},
 		{
 			icon: UserOutlined,

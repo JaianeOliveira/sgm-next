@@ -1,8 +1,9 @@
 import React from 'react';
+import MainLayout from '../layout/main';
 
 const Tutorials = () => {
 	return (
-		<>
+		<MainLayout>
 			<h2>Como assinar os documentos digitalmente</h2>
 			<iframe
 				width="560"
@@ -30,7 +31,7 @@ const Tutorials = () => {
 				gravida in lobortis egestas elit massa. Magna felis, odio neque,
 				volutpat.
 			</p>
-		</>
+		</MainLayout>
 	);
 };
 

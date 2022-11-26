@@ -1,6 +1,7 @@
 import { Card, notification, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import VacancyCard from '../components/VacancyCard';
+import MainLayout from '../layout/main';
 import api from '../utils/api';
 
 const Vacancies = () => {
@@ -28,7 +29,7 @@ const Vacancies = () => {
 	}, []);
 
 	return (
-		<div>
+		<MainLayout>
 			<h2>Vagas</h2>
 			<div>
 				<Space size={[32, 64]} wrap>
@@ -42,7 +43,7 @@ const Vacancies = () => {
 					))}
 				</Space>
 			</div>
-		</div>
+		</MainLayout>
 	);
 };
 

@@ -4,6 +4,7 @@ import Layout from '../layout';
 import { ConfigProvider, Button } from 'antd';
 import { Provider } from 'react-redux';
 import { store } from '../store';
+import AuthProvider from '../components/AuthProvider';
 
 export default function App({ Component, pageProps }: AppProps) {
 	return (
@@ -15,9 +16,9 @@ export default function App({ Component, pageProps }: AppProps) {
 					},
 				}}
 			>
-				<Layout>
+				<AuthProvider>
 					<Component {...pageProps} />
-				</Layout>
+				</AuthProvider>
 			</ConfigProvider>
 		</Provider>
 	);

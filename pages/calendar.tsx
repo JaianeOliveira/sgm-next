@@ -1,6 +1,7 @@
 import { List, notification, Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
 import Container from '../components/common/Container';
+import MainLayout from '../layout/main';
 import api from '../utils/api';
 
 const Calendar = () => {
@@ -26,7 +27,7 @@ const Calendar = () => {
 	}, []);
 
 	return (
-		<>
+		<MainLayout>
 			<Container align="flex-start" justify="flex-start" margin="0 0 1rem 0">
 				<h2>Cronograma</h2>
 			</Container>
@@ -38,7 +39,7 @@ const Calendar = () => {
 					</List.Item>
 				))}
 			</List>
-		</>
+		</MainLayout>
 	);
 };
 
