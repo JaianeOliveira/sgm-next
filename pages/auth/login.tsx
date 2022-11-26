@@ -1,49 +1,48 @@
 import { Button, Form, Input, notification } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { user } from '../../dummy_data/users';
 import { useAppDispatch } from '../../hooks/useRedux';
 import AuthLayout from '../../layout/auth';
 import { login } from '../../store/authSlice';
 import { LoginCard } from '../../styles/_auth';
+import api from '../../utils/api';
 
 const Login = () => {
 	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const [form] = Form.useForm();
 
-	const openNotificationWithIcon = (type: 'success' | 'error') => {
-		notification[type]({
-			message:
-				type === 'success'
-					? 'Bem Vindo(a)'
-					: 'Algo deu errado. Tente novamente',
-		});
-	};
-
-	const loginHandler = (e: any) => {
+	const loginHandler = async (e: any) => {
 		e.preventDefault();
 		console.log(form.getFieldsValue());
 		const { email, password } = form.getFieldsValue();
-		if (email === 'jaiane@email.com' && password === 'secret') {
-			onSuccess();
-		} else {
-			onError();
-		}
+
+		await api
+			.post('/auth', { email, password })
+			.then((response) => {
+				onSuccess(response.data.user);
+			})
+			.catch((err) => {
+				console.log(err);
+				notification.error({ message: err.response.data.message });
+			});
 	};
-	const onSuccess = () => {
+
+	const onSuccess = (user: user) => {
 		dispatch(
 			login({
 				token: '1234-sdkas-1231',
-				userType: 'student',
+				userType: user.userRole,
 			})
 		);
 		window.localStorage.setItem('sgm_token', '1234-sdkas-1231');
-		router.replace('/student/home');
-		openNotificationWithIcon('success');
+		notification.success({
+			message: `Bem vindo(a) ${user.name}`,
+		});
+		router.replace('/');
 	};
-	const onError = () => {
-		openNotificationWithIcon('error');
-	};
+
 	return (
 		<AuthLayout>
 			<LoginCard style={{ width: 300 }}>
