@@ -2,6 +2,7 @@ import { User } from '@prisma/client';
 import { Button, Form, Input } from 'antd';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
+import { parseCookies } from 'nookies';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import AuthLayout from '../../layout/auth';
@@ -64,7 +65,18 @@ const Login = () => {
 	);
 };
 
-const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const { 'sgm-token': token, 'sgm-userRole': userRole } = parseCookies(ctx);
+
+	if (token) {
+		return {
+			redirect: {
+				destination: userRole === 'student' ? '/' : `/${userRole}/dashboard`,
+				permanent: false,
+			},
+		};
+	}
+
 	return {
 		props: {},
 	};
