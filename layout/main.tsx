@@ -1,9 +1,9 @@
 import { Menu } from 'antd';
 import { useRouter } from 'next/router';
+import { parseCookies } from 'nookies';
 import React, { useState } from 'react';
 import Logo from '../components/common/Logo';
 import MainHeader from '../components/MainHeader';
-import { useAppSelector } from '../hooks/useRedux';
 import {
 	Header,
 	LogoContainer,
@@ -22,7 +22,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 	const router = useRouter();
 	const [collapsed, setCollapsed] = useState(false);
 
-	const userRole = useAppSelector((state) => state.auth.userRole);
+	const { 'sgm-userRole': userRole } = parseCookies();
 
 	const activePath = router.asPath === '/' ? '/' : router.asPath.split('/')[1];
 

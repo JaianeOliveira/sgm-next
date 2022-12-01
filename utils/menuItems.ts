@@ -1,14 +1,12 @@
 import {
-	AppstoreAddOutlined,
 	AppstoreOutlined,
 	CalendarOutlined,
+	FileTextOutlined,
 	HomeOutlined,
 	PlaySquareOutlined,
 	QuestionCircleOutlined,
 	UserOutlined,
-	FileTextOutlined,
 } from '@ant-design/icons';
-import users from '../types';
 
 const UserItems = {
 	external: [
@@ -20,22 +18,22 @@ const UserItems = {
 		{
 			icon: CalendarOutlined,
 			label: 'Cronograma',
-			navTo: 'calendar',
+			navTo: '/calendar',
 		},
 		{
 			icon: AppstoreOutlined,
 			label: 'Vagas',
-			navTo: 'vacancies',
+			navTo: '/vacancies',
 		},
 		{
 			icon: PlaySquareOutlined,
 			label: 'Tutoriais',
-			navTo: 'tutorials',
+			navTo: '/tutorials',
 		},
 		{
 			icon: QuestionCircleOutlined,
 			label: 'Dúvidas frequentes',
-			navTo: 'faq',
+			navTo: '/faq',
 		},
 	],
 	student: [
@@ -47,61 +45,61 @@ const UserItems = {
 		{
 			icon: FileTextOutlined,
 			label: 'Minha Inscrição',
-			navTo: 'subscription',
+			navTo: '/subscription',
 		},
 		{
 			icon: CalendarOutlined,
 			label: 'Cronograma',
-			navTo: 'calendar',
+			navTo: '/calendar',
 		},
 		{
 			icon: AppstoreOutlined,
 			label: 'Vagas',
-			navTo: 'vacancies',
+			navTo: '/vacancies',
 		},
 		{
 			icon: PlaySquareOutlined,
 			label: 'Tutoriais',
-			navTo: 'tutorials',
+			navTo: '/tutorials',
 		},
 		{
 			icon: QuestionCircleOutlined,
 			label: 'Dúvidas frequentes',
-			navTo: 'faq',
+			navTo: '/faq',
 		},
 		{
 			icon: UserOutlined,
 			label: 'Perfil de Usuário',
-			navTo: 'profile',
+			navTo: '/profile',
 		},
 	],
 	monitor: [
 		{
 			icon: HomeOutlined,
 			label: 'Início',
-			navTo: 'monitor/dashboard',
+			navTo: '/monitor/dashboard',
 		},
 		{
 			icon: FileTextOutlined,
 			label: 'Relatórios',
-			navTo: 'monitor/reports',
+			navTo: '/monitor/reports',
 		},
 		{
 			icon: PlaySquareOutlined,
 			label: 'Tutoriais',
-			navTo: 'tutorials',
+			navTo: '/tutorials',
 		},
 		{
 			icon: UserOutlined,
 			label: 'Perfil de Usuário',
-			navTo: 'profile',
+			navTo: '/profile',
 		},
 	],
 	teacher: [],
 	admins: [],
 };
 
-const getMenuItems = (userType: users) => {
+const getMenuItems = (userType: string) => {
 	switch (userType) {
 		case 'external':
 			return UserItems.external;

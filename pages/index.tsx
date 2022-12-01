@@ -1,4 +1,6 @@
 import { Steps, Timeline } from 'antd';
+import { GetServerSideProps } from 'next';
+import { parseCookies } from 'nookies';
 import Container from '../components/common/Container';
 import MainLayout from '../layout/main';
 import { ExternalHomeContainer } from '../styles/_home';
@@ -82,3 +84,20 @@ export default function Home() {
 		</MainLayout>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const { 'sgm-userRole': userRole } = parseCookies(ctx);
+
+	if (userRole && userRole !== 'student') {
+		return {
+			redirect: {
+				destination: `/${userRole}/dashboard`,
+				permanent: false,
+			},
+		};
+	}
+
+	return {
+		props: {},
+	};
+};

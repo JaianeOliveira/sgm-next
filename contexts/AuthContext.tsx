@@ -1,6 +1,6 @@
 import { notification } from 'antd';
 import Router from 'next/router';
-import { parseCookies, setCookie } from 'nookies';
+import { destroyCookie, parseCookies, setCookie } from 'nookies';
 import { createContext, useEffect, useState } from 'react';
 import { AuthResponse } from '../pages/api/auth';
 import { UserResponse } from '../pages/api/user';
@@ -15,6 +15,7 @@ type AuthContextType = {
 	isAuthenticated: boolean;
 	login: (data: LoginInputType) => Promise<void>;
 	user: UserResponse | null;
+	logout: () => Promise<void>;
 };
 
 export const AuthContext = createContext({} as AuthContextType);
@@ -23,8 +24,6 @@ export const AuthProvider = ({ children }: { children: any }) => {
 	const [user, setUser] = useState<UserResponse | null>(null);
 
 	const login = async ({ email, password }: LoginInputType) => {
-		console.log(email, password);
-
 		const {
 			data: { token, user: userData },
 		} = await api.post<AuthResponse>('/auth', {
@@ -47,6 +46,20 @@ export const AuthProvider = ({ children }: { children: any }) => {
 		Router.push('/');
 	};
 
+	const logout = async () => {
+		destroyCookie(undefined, 'sgm-token');
+
+		destroyCookie(undefined, 'sgm-userRole');
+
+		api.defaults.headers['Authorization'] = null;
+
+		setUser(null);
+
+		notification.success({ message: 'Até mais!' });
+
+		Router.push('/');
+	};
+
 	useEffect(() => {
 		const { 'sgm-token': token } = parseCookies();
 		if (token) {
@@ -63,7 +76,9 @@ export const AuthProvider = ({ children }: { children: any }) => {
 	}, []);
 
 	return (
-		<AuthContext.Provider value={{ isAuthenticated: !!user, login, user }}>
+		<AuthContext.Provider
+			value={{ isAuthenticated: !!user, login, user, logout }}
+		>
 			{children}
 		</AuthContext.Provider>
 	);
