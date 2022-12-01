@@ -1,31 +1,51 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dummy_users, { user } from '../../dummy_data/users';
+import prisma from '../../services/prisma';
+import { hashCompare, newJwt } from '../../utils';
+import { UserResponse } from './user';
 
-type SuccessResponse = {
-	user: user;
+export type AuthResponse = {
+	user: UserResponse;
+	token: string;
 };
 
-type ErrorResponse = {
+export type AuthErrorResponse = {
 	message: string;
 };
 
-export default function auth(
+export default async function auth(
 	req: NextApiRequest,
-	res: NextApiResponse<SuccessResponse | ErrorResponse>
+	res: NextApiResponse<AuthResponse | AuthErrorResponse>
 ) {
-	const input = req.body;
+	const { email, password } = req.body;
 
-	const user = dummy_users.find((user) => user.email === input.email);
-
-	if (!user) {
-		return res.status(401).json({ message: 'Usuário não encontrado' });
+	if (!email || !password) {
+		return res.status(401).json({
+			message: `Insira ${!email && 'o email'} ${!email && !password && 'e'} ${
+				!password && 'a senha'
+			} do usuário`,
+		});
 	}
 
-	if (user.password !== input.password) {
+	const user = await prisma.user.findFirst({
+		where: { email },
+	});
+
+	if (!user) {
+		return res.status(404).json({ message: 'Usuário não encontrado' });
+	}
+
+	const passwordCheck = await hashCompare(password, user.password_hash);
+
+	if (!passwordCheck) {
 		return res.status(401).json({ message: 'Senha incorreta' });
 	}
 
-	const { password, ...dataToReturn } = user;
+	const newToken = newJwt({ email, password });
 
-	return res.status(200).json({ user: dataToReturn });
+	const { password_hash, ...userDataToReturn } = user;
+
+	return res.json({
+		user: userDataToReturn,
+		token: newToken,
+	});
 }

@@ -1,53 +1,131 @@
+import jwt from 'jsonwebtoken';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dummy_users, { user } from '../../../dummy_data/users';
+import prisma from '../../../services/prisma';
+import { UserInput } from '../../../types';
+import { hashCompare, hashGenerator } from '../../../utils';
+export type UserResponse = {
+	id: string;
+	name: string;
+	email: string;
+	registrationNumber: string;
+	avatar: string | null;
+	userRole: string;
+};
 
-export default function User(req: NextApiRequest, res: NextApiResponse) {
+const getIdentifier = (data: UserInput) => {
+	if (data.email) {
+		return { email: data.email };
+	} else if (data.registrationNumber) {
+		return { registrationNumber: data.registrationNumber };
+	} else return {};
+};
+
+export default async function User(req: NextApiRequest, res: NextApiResponse) {
 	const method = req.method;
-	const body: {
-		email?: string;
-		password?: string;
-		name?: string;
-		userRole?: 'student' | 'monitor' | 'teacher' | 'admin';
-		avatar?: string;
-	} = req.body;
+	const token = req.headers.authorization?.split(' ')[1];
 
 	if (method === 'GET') {
-		const user = dummy_users.find((user) => user.email === req.query.email);
+		if (token) {
+			const decodedToken = jwt.decode(token);
+
+			if (typeof decodedToken !== 'string') {
+				const user = await prisma.user.findFirst({
+					where: { email: decodedToken?.email },
+				});
+
+				if (!user) {
+					return res.status(404).json({ message: 'Usuário não encontrado' });
+				}
+
+				const { password_hash, ...userToResponse } = user;
+				return res.status(200).json({ user: userToResponse });
+			}
+		}
+
+		return res.status(401).json({ message: 'Token Inválido' });
+	} else if (method === 'POST') {
+		const { password, ...data }: UserInput = req.body;
+
+		const user = await prisma.user.findFirst({
+			where: { ...getIdentifier(req.body) },
+		});
+
+		if (user) {
+			const { password_hash, ...updatedUser } = await prisma.user.update({
+				where: { ...getIdentifier(req.body) },
+				data: {
+					...data,
+					password_hash: password ? await hashGenerator(password) : undefined,
+				},
+			});
+
+			return res.json({
+				message: 'Usuário alterado com sucesso',
+				user: updatedUser,
+			});
+		} else {
+			if (
+				!password ||
+				!data.email ||
+				!data.name ||
+				!data.registrationNumber ||
+				!data.userRole
+			) {
+				return res.status(401).json({
+					message:
+						'Insira todos os dados necessários para a criação de um novo usuário',
+				});
+			}
+			const { password_hash, ...createdUser } = await prisma.user.create({
+				data: {
+					name: data.name,
+					email: data.email,
+					registrationNumber: data.registrationNumber,
+					avatar: data.avatar,
+					userRole: data.userRole,
+					password_hash: await hashGenerator(password),
+				},
+			});
+
+			return res.json({
+				message: 'Usuário criado com sucesso',
+				user: createdUser,
+			});
+		}
+	} else if (method === 'DELETE') {
+		const {
+			email,
+			password,
+		}: {
+			email?: string;
+			password?: string;
+		} = req.query;
+
+		if (!email || !password) {
+			return res.status(401).json({
+				message: `Informe ${!email && 'o email'} ${
+					!email && !password && 'e'
+				} ${!password && 'a senha'} do usuário`,
+			});
+		}
+
+		const user = await prisma.user.findFirst({
+			where: { email },
+		});
 
 		if (!user) {
 			return res.status(404).json({ message: 'Usuário não encontrado' });
 		}
 
-		const { password, ...dataToReturn } = user;
-		return res.status(200).json({ user: dataToReturn });
-	} else if (method === 'POST') {
-		const userIndex = dummy_users.findIndex(
-			(user) => user.email === req.query.email
-		);
+		const passwordCheck = await hashCompare(password, user.password_hash);
 
-		if (userIndex === -1) {
-			return res.status(404).json({ message: 'Usuário não encontrado' });
+		if (!passwordCheck) {
+			return res.status(401).json({ message: 'Senha incorreta' });
 		}
 
-		dummy_users[userIndex] = { ...dummy_users[userIndex], ...body };
-
-		return res.json({ message: 'Usuário alterado com sucesso' });
-	} else if (method === 'DELETE') {
-		const userIndex = dummy_users.findIndex(
-			(user) => user.email === req.query.email
-		);
-
-		if (userIndex === -1) {
-			return res.status(404).json({ message: 'Usuário não encontrado' });
-		}
-
-		const user = dummy_users[userIndex];
-
-		if (user.password !== req.query.password) {
-			return res.status(403).json({ message: 'Senha incorreta' });
-		}
-
-		dummy_users.splice(userIndex, 1);
+		await prisma.user.delete({
+			where: { email },
+		});
 
 		return res.json({ message: 'Usuário deletado com sucesso' });
 	}

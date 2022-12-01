@@ -1,9 +1,6 @@
 import { Steps, Timeline } from 'antd';
-import Head from 'next/head';
-import Image from 'next/image';
 import Container from '../components/common/Container';
 import MainLayout from '../layout/main';
-import styles from '../styles/Home.module.css';
 import { ExternalHomeContainer } from '../styles/_home';
 
 export default function Home() {

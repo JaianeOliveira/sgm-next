@@ -1,5 +1,5 @@
-import { Card, notification, Space } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { notification, Space } from 'antd';
+import { useEffect, useState } from 'react';
 import VacancyCard from '../components/VacancyCard';
 import MainLayout from '../layout/main';
 import api from '../utils/api';

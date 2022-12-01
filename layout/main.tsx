@@ -1,19 +1,17 @@
-import { Layout, Menu, notification } from 'antd';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Menu } from 'antd';
 import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import Logo from '../components/common/Logo';
-import {
-	LogoContainer,
-	Header,
-	Sider,
-	StyledLayout,
-	StyledContent,
-} from '../styles/_layout';
-import Link from 'next/link';
-import { useAppSelector } from '../hooks/useRedux';
-import getMenuItems from '../utils/menuItems';
-import Container from '../components/common/Container';
 import MainHeader from '../components/MainHeader';
+import { useAppSelector } from '../hooks/useRedux';
+import {
+	Header,
+	LogoContainer,
+	Sider,
+	StyledContent,
+	StyledLayout,
+} from '../styles/_layout';
+import getMenuItems from '../utils/menuItems';
 
 type MainLayoutProps = {
 	children?: React.ReactNode | React.ReactNode[];
@@ -24,7 +22,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 	const router = useRouter();
 	const [collapsed, setCollapsed] = useState(false);
 
-	const userRole = useAppSelector((state) => state.auth.userType);
+	const userRole = useAppSelector((state) => state.auth.userRole);
 
 	const activePath = router.asPath === '/' ? '/' : router.asPath.split('/')[1];
 

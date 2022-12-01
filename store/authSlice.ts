@@ -1,15 +1,14 @@
-import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { RootState } from '.';
+import { createSlice } from '@reduxjs/toolkit';
 
 interface AuthState {
 	token: string | null;
-	userType: 'external' | 'student' | 'monitor' | 'teacher' | 'admin';
+	userRole: string;
 }
 
 const initialState: AuthState = {
 	token: null,
-	userType: 'external',
+	userRole: 'external',
 };
 
 export const AuthSlice = createSlice({
@@ -18,11 +17,11 @@ export const AuthSlice = createSlice({
 	reducers: {
 		login: (state, action: PayloadAction<AuthState>) => {
 			state.token = action.payload.token;
-			state.userType = action.payload.userType;
+			state.userRole = action.payload.userRole;
 		},
 		logout: (state) => {
 			state.token = null;
-			state.userType = 'external';
+			state.userRole = 'external';
 		},
 	},
 });

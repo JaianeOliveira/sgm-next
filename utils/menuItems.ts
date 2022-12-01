@@ -8,7 +8,7 @@ import {
 	UserOutlined,
 	FileTextOutlined,
 } from '@ant-design/icons';
-import users from '../types/users';
+import users from '../types';
 
 const UserItems = {
 	external: [

@@ -1,46 +1,27 @@
-import { Button, Form, Input, notification } from 'antd';
+import { User } from '@prisma/client';
+import { Button, Form, Input } from 'antd';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { user } from '../../dummy_data/users';
-import { useAppDispatch } from '../../hooks/useRedux';
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
 import AuthLayout from '../../layout/auth';
-import { login } from '../../store/authSlice';
 import { LoginCard } from '../../styles/_auth';
-import api from '../../utils/api';
+
+type AuthResponse = {
+	user: User;
+	token: string;
+};
 
 const Login = () => {
-	const dispatch = useAppDispatch();
-	const router = useRouter();
+	const { login: authenticate } = useContext(AuthContext);
 	const [form] = Form.useForm();
 
 	const loginHandler = async (e: any) => {
 		e.preventDefault();
-		console.log(form.getFieldsValue());
+
 		const { email, password } = form.getFieldsValue();
 
-		await api
-			.post('/auth', { email, password })
-			.then((response) => {
-				onSuccess(response.data.user);
-			})
-			.catch((err) => {
-				console.log(err);
-				notification.error({ message: err.response.data.message });
-			});
-	};
-
-	const onSuccess = (user: user) => {
-		dispatch(
-			login({
-				token: '1234-sdkas-1231',
-				userType: user.userRole,
-			})
-		);
-		window.localStorage.setItem('sgm_token', '1234-sdkas-1231');
-		notification.success({
-			message: `Bem vindo(a) ${user.name}`,
-		});
-		router.replace('/');
+		await authenticate({ email, password });
 	};
 
 	return (
@@ -81,6 +62,12 @@ const Login = () => {
 			</LoginCard>
 		</AuthLayout>
 	);
+};
+
+const getServerSideProps: GetServerSideProps = async (ctx) => {
+	return {
+		props: {},
+	};
 };
 
 export default Login;

@@ -1,5 +1,4 @@
 import { Collapse } from 'antd';
-import React from 'react';
 import MainLayout from '../layout/main';
 
 const { Panel } = Collapse;

@@ -1,4 +1,4 @@
-export default {
+const permitions = {
 	external: [
 		'/',
 		'/calendar',
@@ -27,3 +27,4 @@ export default {
 	teacher: [],
 	admin: [],
 };
+export default permitions;
