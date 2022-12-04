@@ -2,8 +2,8 @@
 
 Plataforma cujo objetivo é auxiliar aluno e professor durante o processo de Monitoria do IFAL - Campus Palmeira dos ìndios, desde o processo seletivo até o acompanhamento do monitor.
 
-![Testar](https://img.shields.io/badge/-Testar-6A00E4?style=for-the-badge&labelColor=6A00E4&logo=Vercel&logoColor=white&link=https://www.linkedin.com/in/jaianeoliveira/)
-![Testar](https://img.shields.io/badge/-Protótipo-6A00E4?style=for-the-badge&labelColor=6A00E4&logo=Figma&logoColor=white&link=https://www.linkedin.com/in/jaianeoliveira/)
+[![Testar](https://img.shields.io/badge/-Testar-6A00E4?style=for-the-badge&labelColor=6A00E4&logo=Vercel&logoColor=white&link=[https://www.linkedin.com/in/jaianeoliveira/](https://sgmif.vercel.app/))](https://sgmif.vercel.app/)
+![Protótipo](https://img.shields.io/badge/-Protótipo-6A00E4?style=for-the-badge&labelColor=6A00E4&logo=Figma&logoColor=white&link=https://www.linkedin.com/in/jaianeoliveira/)
 
 ## 👩🏽‍💻 Equipe de desenvolvimento
 
@@ -37,7 +37,7 @@ em seguida, dentro da pasta do repositório clonado, instale as dependências do
 ```
 $ yarn
 ```
-crie um arquivo `.env` que siga a estrutura de `.env.example` e preencha os campos. Em seguida execute os comandos para criar e popular o banco 
+crie um arquivo `.env.local` que siga a estrutura de `.env.example` e preencha os campos. Em seguida execute os comandos para criar e popular o banco 
 
 ```
 $ yarn db:push
