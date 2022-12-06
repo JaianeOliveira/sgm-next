@@ -1,8 +1,8 @@
 import { notification, Space } from 'antd';
 import { useEffect, useState } from 'react';
+import api from 'services/api';
 import VacancyCard from '../components/VacancyCard';
 import MainLayout from '../layout/main';
-import api from '../utils/api';
 
 const Vacancies = () => {
 	const [vacancies, setVacancies] = useState<

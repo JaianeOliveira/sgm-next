@@ -30,7 +30,7 @@ model User {
   avatar   String?
 
   password_hash String
-  userType      UserType
+  user_type      UserType
 
   teacher Teacher?
   student Student?
@@ -44,7 +44,7 @@ model Teacher {
   user  User   @relation(fields: [email], references: [email])
   email String @unique
 
-  is_admin  Boolean   @default(false)
+  is_admin  Boolean?   @default(false)
   subjects  Subject[]
   monitors  Student[]
   vacancies Vacancy[]
@@ -58,9 +58,9 @@ model Student {
   user  User   @relation(fields: [email], references: [email])
   email String @unique
 
-  is_monitor    Boolean        @default(false)
+  is_monitor    Boolean?        @default(false)
   teacher       Teacher?       @relation(fields: [teacher_email], references: [email])
-  teacher_email String         @unique
+  teacher_email String?         @unique
   reports       Report[]
   subscriptions Subscription[]
 
