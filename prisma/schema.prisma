@@ -10,14 +10,152 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
+enum UserType {
+  teacher
+  student
+}
 
 model User {
-  id String @id @default(uuid())
-  name String
+  secure_id String @id @default(uuid())
+
+  email               String @unique @db.VarChar(100)
+  registration_number String @unique @db.VarChar(50)
+
+  name     String    @db.VarChar(200)
+  phone    String?   @unique @db.VarChar(20)
+  cpf      String?   @unique @db.VarChar(20)
+  rg       String?   @unique @db.VarChar(20)
+  birthday DateTime?
+  address  String?
+  avatar   String?
+
+  password_hash String
+  userType      UserType
+
+  teacher Teacher?
+  student Student?
+
+  updated_at DateTime? @updatedAt
+}
+
+model Teacher {
+  secure_id String @id @default(uuid())
+
+  user  User   @relation(fields: [email], references: [email])
   email String @unique
-  registrationNumber String @unique
-  userRole String 
-  avatar String?
-  password_hash String  
+
+  is_admin  Boolean   @default(false)
+  subjects  Subject[]
+  monitors  Student[]
+  vacancies Vacancy[]
+
+  updated_at DateTime? @updatedAt
+}
+
+model Student {
+  secure_id String @id @default(uuid())
+
+  user  User   @relation(fields: [email], references: [email])
+  email String @unique
+
+  is_monitor    Boolean        @default(false)
+  teacher       Teacher?       @relation(fields: [teacher_email], references: [email])
+  teacher_email String         @unique
+  reports       Report[]
+  subscriptions Subscription[]
+
+  updated_At DateTime? @updatedAt
+}
+
+model Subject {
+  secure_id String @id @default(uuid())
+  name      String
+  code      String @unique
+
+  teachers  Teacher[]
+  vacancies Vacancy[]
+
+  updated_at DateTime? @updatedAt
+}
+
+model Report {
+  secure_id String @id @default(uuid())
+
+  student    Student @relation(fields: [student_id], references: [secure_id])
+  student_id String  @unique
+  document   String?
+  approved   Boolean @default(false)
+
+  updated_at DateTime? @updatedAt
+}
+
+model Subscription {
+  secure_id String @id @default(uuid())
+
+  vacancy    Vacancy @relation(fields: [vacancy_id], references: [secure_id])
+  vacancy_id String  @unique
+
+  student    Student @relation(fields: [student_id], references: [secure_id])
+  student_id String  @unique
+}
+
+model SelectiveProccess {
+  secure_id String @id @default(uuid())
+
+  description String?          @db.LongText
+  documents   Document[]
+  vacancies   Vacancy[]
+  calendar    SelectionStage[]
+
+  updated_at DateTime? @updatedAt
+}
+
+model Document {
+  secure_id String @id @default(uuid())
+
+  name String @db.VarChar(100)
+  link String
+
+  selective_proccess    SelectiveProccess @relation(fields: [selective_proccess_id], references: [secure_id])
+  selective_proccess_id String            @unique
+
+  selection_stage    SelectionStage @relation(fields: [selection_stage_id], references: [secure_id])
+  selection_stage_id String         @unique
+}
+
+model Vacancy {
+  secure_id String @id @default(uuid())
+
+  selective_proccess    SelectiveProccess @relation(fields: [selective_proccess_id], references: [secure_id])
+  selective_proccess_id String            @unique
+
+  title                             String  @db.VarChar(200)
+  description                       String  @db.LongText
+  vacancies_amount_with_scholarship Int     @db.Int
+  vacancies_amount_no_scholarship   Int     @db.Int
+  responsible_teacher               Teacher @relation(fields: [responsible_teacher_id], references: [secure_id])
+  responsible_teacher_id            String  @unique
+
+  subject    Subject @relation(fields: [subject_id], references: [secure_id])
+  subject_id String  @unique
+
+  subscriptions Subscription[]
+
+  updated_at DateTime? @updatedAt
+}
+
+model SelectionStage {
+  secure_id String @id @default(uuid())
+
+  title          String     @db.VarChar(100)
+  description    String     @db.LongText
+  starts_in      DateTime   @db.Timestamp()
+  ends_in        DateTime   @db.Timestamp()
+  is_in_progress Boolean    @default(false)
+  documents      Document[]
+
+  selective_proccess    SelectiveProccess @relation(fields: [selective_proccess_id], references: [secure_id])
+  selective_proccess_id String            @unique
+
+  updated_at DateTime? @db.Timestamp()
 }
